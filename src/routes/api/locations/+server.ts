@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { Client } from '@notionhq/client';
 import { NOTION_TOKEN } from '$env/static/private';
+import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
 import type { RequestHandler } from './$types';
 
 interface LocationData {
@@ -100,12 +101,12 @@ export const GET: RequestHandler = async ({ url }) => {
 					notes
 				});
 			} else if (address) {
-				// Try to geocode the address
+				// Try to geocode the address using Mapbox
 				try {
 					const geocodeResponse = await fetch(
-						`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+						`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
 							address
-						)}&limit=1`,
+						)}.json?access_token=${PUBLIC_MAPBOX_TOKEN}&country=US&limit=1`,
 						{
 							headers: {
 								'User-Agent': 'Notiography/1.0'
@@ -113,14 +114,14 @@ export const GET: RequestHandler = async ({ url }) => {
 						}
 					);
 					const geocodeData = await geocodeResponse.json();
-					console.log('Geocoding response for', address, ':', geocodeData);
+					console.log('Mapbox geocoding response for', address, ':', geocodeData);
 
-					if (geocodeData && geocodeData.length > 0) {
-						const location = geocodeData[0];
+					if (geocodeData && geocodeData.features && geocodeData.features.length > 0) {
+						const location = geocodeData.features[0];
 						locations.push({
 							name,
-							lat: parseFloat(location.lat),
-							lng: parseFloat(location.lon),
+							lat: location.center[1], // Mapbox returns [lng, lat]
+							lng: location.center[0],
 							notes
 						});
 					} else {
@@ -129,9 +130,12 @@ export const GET: RequestHandler = async ({ url }) => {
 						);
 						continue;
 					}
-				} catch (geocodeError) {
+				} catch (geocodeError: any) {
+					console.error('Geocoding error for', address, ':', geocodeError);
 					errors.push(
-						`Page ${page.id}: Geocoding failed for "${address}". Please add Latitude/Longitude manually.`
+						`Page ${page.id}: Geocoding failed for "${address}". Error: ${
+							geocodeError?.message || 'Unknown error'
+						}. Please add Latitude/Longitude manually.`
 					);
 					continue;
 				}
