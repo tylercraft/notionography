@@ -59,6 +59,9 @@ export const GET: RequestHandler = async ({ url }) => {
 		for (const page of response.results as NotionPage[]) {
 			const properties = page.properties;
 
+			// Debug: Log available properties
+			console.log('Available properties:', Object.keys(properties));
+
 			// Extract coordinates (optional)
 			const latitude = properties['Latitude']?.number;
 			const longitude = properties['Longitude']?.number;
@@ -100,10 +103,12 @@ export const GET: RequestHandler = async ({ url }) => {
 				// Try to geocode the address
 				try {
 					const geocodeResponse = await fetch(
-						`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`
+						`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+							address
+						)}&limit=1`
 					);
 					const geocodeData = await geocodeResponse.json();
-					
+
 					if (geocodeData && geocodeData.length > 0) {
 						const location = geocodeData[0];
 						locations.push({
@@ -113,11 +118,15 @@ export const GET: RequestHandler = async ({ url }) => {
 							notes
 						});
 					} else {
-						errors.push(`Page ${page.id}: Could not geocode address "${address}". Please add Latitude/Longitude manually.`);
+						errors.push(
+							`Page ${page.id}: Could not geocode address "${address}". Please add Latitude/Longitude manually.`
+						);
 						continue;
 					}
 				} catch (geocodeError) {
-					errors.push(`Page ${page.id}: Geocoding failed for "${address}". Please add Latitude/Longitude manually.`);
+					errors.push(
+						`Page ${page.id}: Geocoding failed for "${address}". Please add Latitude/Longitude manually.`
+					);
 					continue;
 				}
 			}
