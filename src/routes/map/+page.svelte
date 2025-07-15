@@ -40,6 +40,7 @@
 			}
 
 			// Initialize Mapbox
+			await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay to ensure DOM is ready
 			await initializeMap(result.locations);
 		} catch (err) {
 			console.error('Error loading map:', err);
@@ -52,6 +53,11 @@
 		// Dynamically import mapbox-gl
 		const mapboxgl = await import('mapbox-gl');
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
+
+		// Ensure container exists
+		if (!mapContainer) {
+			throw new Error('Map container not found');
+		}
 
 		// Calculate bounds
 		const bounds = new mapboxgl.LngLatBounds();
