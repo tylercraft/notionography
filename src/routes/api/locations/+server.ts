@@ -105,9 +105,15 @@ export const GET: RequestHandler = async ({ url }) => {
 					const geocodeResponse = await fetch(
 						`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
 							address
-						)}&limit=1`
+						)}&limit=1`,
+						{
+							headers: {
+								'User-Agent': 'Notiography/1.0'
+							}
+						}
 					);
 					const geocodeData = await geocodeResponse.json();
+					console.log('Geocoding response for', address, ':', geocodeData);
 
 					if (geocodeData && geocodeData.length > 0) {
 						const location = geocodeData[0];
