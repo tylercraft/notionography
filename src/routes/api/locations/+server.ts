@@ -97,12 +97,29 @@ export const GET: RequestHandler = async ({ url }) => {
 					notes
 				});
 			} else if (address) {
-				// TODO: Add geocoding for address
-				// For now, we'll skip addresses without coordinates
-				errors.push(
-					`Page ${page.id}: Address geocoding not yet implemented. Please add Latitude/Longitude for now.`
-				);
-				continue;
+				// Try to geocode the address
+				try {
+					const geocodeResponse = await fetch(
+						`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`
+					);
+					const geocodeData = await geocodeResponse.json();
+					
+					if (geocodeData && geocodeData.length > 0) {
+						const location = geocodeData[0];
+						locations.push({
+							name,
+							lat: parseFloat(location.lat),
+							lng: parseFloat(location.lon),
+							notes
+						});
+					} else {
+						errors.push(`Page ${page.id}: Could not geocode address "${address}". Please add Latitude/Longitude manually.`);
+						continue;
+					}
+				} catch (geocodeError) {
+					errors.push(`Page ${page.id}: Geocoding failed for "${address}". Please add Latitude/Longitude manually.`);
+					continue;
+				}
 			}
 		}
 
