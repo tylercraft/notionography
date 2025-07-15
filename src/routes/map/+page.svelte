@@ -7,6 +7,7 @@
 	let map: any;
 	let loading = true;
 	let error: string | null = null;
+	let locations: any[] = [];
 
 	onMount(async () => {
 		if (!PUBLIC_MAPBOX_TOKEN) {
@@ -39,9 +40,9 @@
 				return;
 			}
 
-			// Initialize Mapbox
-			await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay to ensure DOM is ready
-			await initializeMap(result.locations);
+			// Store locations and let reactive statement handle map initialization
+			locations = result.locations;
+			loading = false;
 		} catch (err) {
 			console.error('Error loading map:', err);
 			error = 'Failed to load map. Please check your configuration.';
@@ -107,6 +108,11 @@
 		});
 
 		loading = false;
+	}
+
+	// Reactive statement to initialize map when container and locations are ready
+	$: if (mapContainer && locations.length > 0 && !map) {
+		initializeMap(locations);
 	}
 </script>
 
