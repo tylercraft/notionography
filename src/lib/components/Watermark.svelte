@@ -26,8 +26,8 @@
 		opacity: 0.7;
 		transition: opacity 0.2s;
 	}
-	
+
 	.watermark:hover {
 		opacity: 1;
 	}
-</style> 
+</style>

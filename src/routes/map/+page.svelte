@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
 	import { browser } from '$app/environment';
+	import Logo from '$lib/components/Logo.svelte';
 
 	let mapContainer: HTMLDivElement;
 	let map: any;
@@ -10,7 +11,7 @@
 	let error: string | null = null;
 	let locations: any[] = [];
 	let isEmbedded = false;
-	
+
 	if (browser) {
 		isEmbedded = window.self !== window.top;
 		if (isEmbedded) {
@@ -75,34 +76,37 @@
 			bounds.extend([location.lng, location.lat]);
 		});
 
-		// Create map
+		// Create map with conditional settings
 		map = new mapboxgl.Map({
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/light-v11',
 			bounds: bounds,
 			fitBoundsOptions: {
-				padding: 50,
+				padding: isEmbedded ? 20 : 50,
 				maxZoom: 14 // Prevent zooming in too close
-			}
+			},
+			attributionControl: !isEmbedded
 		});
 
-		// Add navigation controls
-		map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+		// Add navigation controls only for direct access
+		if (!isEmbedded) {
+			map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+		}
 
 		// Add markers for each location
 		locations.forEach((location) => {
-			// Create marker element
+			// Create marker element with conditional size
 			const markerEl = document.createElement('div');
 			markerEl.className = 'marker';
-			markerEl.style.width = '20px';
-			markerEl.style.height = '20px';
+			markerEl.style.width = isEmbedded ? '16px' : '20px';
+			markerEl.style.height = isEmbedded ? '16px' : '20px';
 			markerEl.style.borderRadius = '50%';
 			markerEl.style.backgroundColor = '#3b82f6';
 			markerEl.style.border = '2px solid white';
 			markerEl.style.cursor = 'pointer';
 
-			// Create popup
-			const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+			// Create popup with conditional offset
+			const popup = new mapboxgl.Popup({ offset: isEmbedded ? 20 : 25 }).setHTML(`
 				<div class="popup">
 					<h3>${location.name}</h3>
 					${location.notes ? `<p>${location.notes}</p>` : ''}
@@ -127,7 +131,7 @@
 </script>
 
 <svelte:head>
-			<title>Notionography Map</title>
+	<title>Notionography Map</title>
 </svelte:head>
 
 {#if loading}
@@ -140,20 +144,25 @@
 	</div>
 {:else}
 	<div bind:this={mapContainer} class="map-container" />
+	{#if isEmbedded}
+		<div class="embedded-logo">
+			<Logo height={32} />
+		</div>
+	{/if}
 {/if}
 
 <style>
 	.map-container {
 		width: 100%;
-		height: calc(100vh - 80px);
+		height: calc(100vh - 170px);
 		position: relative;
 	}
-	
+
 	/* Full height when embedded */
 	:global(.embedded) .map-container {
 		height: 100vh;
 	}
-	
+
 	.back-link {
 		display: inline-block;
 		margin-top: 1rem;
@@ -165,6 +174,16 @@
 	.back-link:hover {
 		text-decoration: underline;
 	}
-	
 
+	.embedded-logo {
+		position: fixed;
+		top: 8px;
+		left: 8px;
+		background: rgba(255, 255, 255, 0.9);
+		padding: 4px 8px;
+		border-radius: 4px;
+		z-index: 1000;
+		backdrop-filter: blur(4px);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
 </style>
