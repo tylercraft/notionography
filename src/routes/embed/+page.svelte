@@ -132,7 +132,6 @@
 {:else}
 	<div bind:this={mapContainer} class="map-container" />
 	{#if isEmbedded}
-		<Watermark />
 		<div class="embedded-logo">
 			<Logo height={32} />
 		</div>
