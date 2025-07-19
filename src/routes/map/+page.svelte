@@ -132,6 +132,21 @@
 
 <svelte:head>
 	<title>Notionography Map</title>
+	<style>
+		/* Maximize height for embedded views */
+		:global(.embedded) {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+
+		:global(.embedded) body {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			height: 100vh;
+		}
+	</style>
 </svelte:head>
 
 {#if loading}
@@ -161,6 +176,10 @@
 	/* Full height when embedded */
 	:global(.embedded) .map-container {
 		height: 100vh;
+		width: 100vw;
+		position: fixed;
+		top: 0;
+		left: 0;
 	}
 
 	.back-link {

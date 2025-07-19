@@ -2,10 +2,15 @@
 	import Logo from './Logo.svelte';
 </script>
 
-<div class="watermark">
+<a
+	href="https://github.com/tylercraft/notionography"
+	target="_blank"
+	rel="noopener noreferrer"
+	class="watermark"
+>
 	<Logo height={16} />
 	<span>Notionography</span>
-</div>
+</a>
 
 <style>
 	.watermark {
@@ -25,6 +30,8 @@
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 		opacity: 0.7;
 		transition: opacity 0.2s;
+		text-decoration: none;
+		cursor: pointer;
 	}
 
 	.watermark:hover {
