@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 Setting up Notiography environment variables..."
+echo "🚀 Setting up Notionography environment variables..."
 echo ""
 
 # Check if .env already exists
@@ -19,7 +19,7 @@ echo "📝 Please provide your API tokens:"
 echo ""
 
 # Get Notion token
-read -p "Enter your Notion integration token (you can name your integration 'Notiography'): " NOTION_TOKEN
+read -p "Enter your Notion integration token (you can name your integration 'Notionography'): " NOTION_TOKEN
 if [ -z "$NOTION_TOKEN" ]; then
     echo "❌ Notion token is required!"
     exit 1

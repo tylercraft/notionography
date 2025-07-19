@@ -1,4 +1,4 @@
-# Notiography 🗺️
+![Notionography Logo](logo.png)
 
 A web-based mapping application that pulls location data from Notion databases and displays them on interactive maps using Mapbox.
 
@@ -16,7 +16,7 @@ A web-based mapping application that pulls location data from Notion databases a
 
 ```bash
 git clone <your-repo-url>
-cd Notiography
+cd Notionography
 yarn install
 ```
 
@@ -41,7 +41,7 @@ MAPBOX_TOKEN=your_mapbox_access_token_here
 
 1. Go to [Notion Integrations](https://www.notion.so/my-integrations)
 2. Click "New integration"
-3. Give it a name (e.g., "Notiography")
+3. Give it a name (e.g., "Notionography")
 4. Copy the "Internal Integration Token"
 
 #### Mapbox Access Token
@@ -215,6 +215,3 @@ src/
 
 MIT License - see LICENSE file for details.
 
----
-
-Built with ❤️ using SvelteKit, Notion API, and Mapbox

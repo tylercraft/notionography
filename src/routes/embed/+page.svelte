@@ -2,11 +2,18 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
+	import { browser } from '$app/environment';
+	import Watermark from '$lib/components/Watermark.svelte';
 
 	let mapContainer: HTMLDivElement;
 	let map: any;
 	let loading = true;
 	let error: string | null = null;
+	let isEmbedded = false;
+	
+	if (browser) {
+		isEmbedded = window.self !== window.top;
+	}
 
 	onMount(async () => {
 		if (!PUBLIC_MAPBOX_TOKEN) {
@@ -104,7 +111,7 @@
 </script>
 
 <svelte:head>
-	<title>Notiography Map</title>
+			<title>Notionography Map</title>
 	<style>
 		body {
 			margin: 0;
@@ -122,6 +129,9 @@
 	</div>
 {:else}
 	<div bind:this={mapContainer} class="map-container" />
+	{#if isEmbedded}
+		<Watermark />
+	{/if}
 {/if}
 
 <style>
