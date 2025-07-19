@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 	import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
 	import { browser } from '$app/environment';
-	import Watermark from '$lib/components/Watermark.svelte';
 	import Logo from '$lib/components/Logo.svelte';
 
 	let mapContainer: HTMLDivElement;
