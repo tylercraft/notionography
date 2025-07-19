@@ -234,7 +234,14 @@
 	<div bind:this={mapContainer} class="map-container" />
 	{#if isEmbedded}
 		<div class="embedded-logo">
-			<Logo height={24} />
+			<a
+				href="https://github.com/tylercraft/notionography"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="watermark"
+			>
+				<Logo height={24} />
+			</a>
 		</div>
 	{/if}
 {/if}
@@ -242,7 +249,7 @@
 <style>
 	.map-container {
 		width: 100%;
-		height: calc(100vh - 170px);
+		height: calc(100vh - 4rem);
 		position: relative;
 	}
 
@@ -268,6 +275,7 @@
 	}
 
 	.embedded-logo {
+		display: flex;
 		position: fixed;
 		top: 8px;
 		left: 8px;
