@@ -8,6 +8,7 @@ A web-based mapping application that pulls location data from Notion databases a
 - **Interactive Maps**: Beautiful, responsive maps powered by Mapbox
 - **Embed Support**: Embed maps directly in Notion pages
 - **Real-time Data**: Always up-to-date with your Notion database
+- **Category Colors**: Color-coded markers based on Notion select fields
 - **Minimal Design**: Clean, focused interface
 
 ## Quick Start
@@ -60,6 +61,7 @@ Create a Notion database with these properties:
 | `Longitude` | Number    | ✅ if no Address | Longitude coordinate                           |
 | `Address`   | Text      | ✅ if no Lat/Lng | Human-readable address (geocoding coming soon) |
 | `Notes`     | Rich Text | ❌               | Additional information                         |
+| `Category`  | Select    | ❌               | Category with color-coded markers              |
 
 ### 5. Share Your Database
 
@@ -98,6 +100,35 @@ Visit `http://localhost:5173` and enter your database ID to see your map!
 2. Paste the embed URL: `https://your-domain.com/embed?db=YOUR_DATABASE_ID`
 3. The map will appear inline in your Notion page
 
+## Categories & Colors
+
+### Setting Up Categories
+
+1. **Add a Select field** to your Notion database
+2. **Name it "Category"** (case-insensitive)
+3. **Create your categories** with different colors
+4. **Assign categories** to your locations
+
+### Color-Coded Markers
+
+Each category will display with its Notion color on the map.
+
+For example:
+
+- **Food locations** → Brown markers
+- **Playground locations** → Green markers
+- **Art locations** → Blue markers
+- **Uncategorized locations** → Default blue markers
+
+### Supported Colors
+
+The app supports all Notion select field colors:
+
+- Default, Gray, Brown, Orange, Yellow
+- Green, Blue, Purple, Pink, Red
+
+Categories are optional - locations without categories will use the default blue marker.
+
 ## API Reference
 
 ### GET `/api/locations?db=DATABASE_ID`
@@ -113,7 +144,9 @@ Returns location data from your Notion database.
 			"name": "Location Name",
 			"lat": 40.7128,
 			"lng": -74.006,
-			"notes": "Optional notes"
+			"notes": "Optional notes",
+			"category": "Food",
+			"categoryColor": "brown"
 		}
 	],
 	"count": 1

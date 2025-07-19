@@ -9,6 +9,8 @@ interface LocationData {
 	lat: number;
 	lng: number;
 	notes?: string;
+	category?: string;
+	categoryColor?: string;
 }
 
 interface NotionPage {
@@ -23,6 +25,10 @@ interface NotionPage {
 			title?: Array<{
 				plain_text: string;
 			}>;
+			select?: {
+				name: string;
+				color: string;
+			};
 		};
 	};
 }
@@ -92,13 +98,31 @@ export const GET: RequestHandler = async ({ url }) => {
 				notes = properties['Notes'].rich_text[0].plain_text;
 			}
 
+			// Extract category (optional) - check for "Category" field (case-insensitive)
+			let category: string | undefined;
+			let categoryColor: string | undefined;
+
+			// Look for Category field (case-insensitive)
+			const categoryKey = Object.keys(properties).find((key) => key.toLowerCase() === 'category');
+
+			if (
+				categoryKey &&
+				properties[categoryKey]?.type === 'select' &&
+				properties[categoryKey]?.select
+			) {
+				category = properties[categoryKey].select!.name;
+				categoryColor = properties[categoryKey].select!.color;
+			}
+
 			// If we have coordinates, use them directly
 			if (latitude !== undefined && longitude !== undefined) {
 				locations.push({
 					name,
 					lat: latitude,
 					lng: longitude,
-					notes
+					notes,
+					category,
+					categoryColor
 				});
 			} else if (address) {
 				// Try to geocode the address using Mapbox
@@ -122,7 +146,9 @@ export const GET: RequestHandler = async ({ url }) => {
 							name,
 							lat: location.center[1], // Mapbox returns [lng, lat]
 							lng: location.center[0],
-							notes
+							notes,
+							category,
+							categoryColor
 						});
 					} else {
 						errors.push(

@@ -42,7 +42,7 @@
 		if (!isEmbedded) {
 			pollingInterval = setInterval(async () => {
 				await checkForUpdates(databaseId);
-			}, 30000); // 30 seconds
+			}, 5000); // 5 seconds
 		}
 
 		// Cleanup on unmount
@@ -107,7 +107,6 @@
 	async function initializeMap(locations: any[]) {
 		// Dynamically import mapbox-gl
 		const mapboxgl = await import('mapbox-gl');
-		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
 
 		// Ensure container exists
 		if (!mapContainer) {
@@ -129,7 +128,8 @@
 				padding: isEmbedded ? 20 : 50,
 				maxZoom: 14 // Prevent zooming in too close
 			},
-			attributionControl: !isEmbedded
+			attributionControl: !isEmbedded,
+			accessToken: PUBLIC_MAPBOX_TOKEN
 		});
 
 		// Add navigation controls only for direct access
@@ -145,7 +145,12 @@
 			markerEl.style.width = isEmbedded ? '16px' : '20px';
 			markerEl.style.height = isEmbedded ? '16px' : '20px';
 			markerEl.style.borderRadius = '50%';
-			markerEl.style.backgroundColor = '#3b82f6';
+
+			// Use category color if available, otherwise default blue
+			const markerColor = location.categoryColor
+				? getNotionColor(location.categoryColor)
+				: '#3b82f6';
+			markerEl.style.backgroundColor = markerColor;
 			markerEl.style.border = '2px solid white';
 			markerEl.style.cursor = 'pointer';
 
@@ -153,6 +158,7 @@
 			const popup = new mapboxgl.Popup({ offset: isEmbedded ? 20 : 25 }).setHTML(`
 				<div class="popup">
 					<h3>${location.name}</h3>
+					${location.category ? `<p><strong>Category:</strong> ${location.category}</p>` : ''}
 					${location.notes ? `<p>${location.notes}</p>` : ''}
 					<p><small>${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}</small></p>
 				</div>
@@ -166,6 +172,29 @@
 		});
 
 		loading = false;
+	}
+
+	// Convert Notion color names to hex values
+	function getNotionColor(colorName: string): string {
+		const colorMap: { [key: string]: string } = {
+			default: 'rgba(84, 72, 49, 0.8)',
+			gray: 'rgba(84, 72, 49, 0.85)',
+			brown: 'rgba(210, 162, 141, 0.85)',
+			orange: 'rgba(224, 124, 57, 0.87)',
+			yellow: 'rgba(236, 191, 66, 0.89)',
+			green: 'rgba(123, 183, 129, 0.87)',
+			blue: 'rgba(93, 165, 206, 0.87)',
+			purple: 'rgba(168, 129, 197, 0.87)',
+			pink: 'rgba(225, 136, 179, 0.87)',
+			red: 'rgba(244, 171, 159, 0.8)'
+		};
+
+		// If Notion provides hex values directly, use them
+		if (colorName.startsWith('#')) {
+			return colorName;
+		}
+
+		return colorMap[colorName] || '#3b82f6'; // Default to blue if color not found
 	}
 
 	// Reactive statement to initialize map when container and locations are ready
