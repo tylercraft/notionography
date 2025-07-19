@@ -280,10 +280,14 @@
 		top: 8px;
 		left: 8px;
 		background: rgba(255, 255, 255, 0.9);
-		padding: 4px 8px;
+		padding: 4px 8px 6px;
 		border-radius: 4px;
 		z-index: 1000;
 		backdrop-filter: blur(4px);
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+
+	.embedded-logo img {
+		display: block;
 	}
 </style>
