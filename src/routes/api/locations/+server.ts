@@ -81,14 +81,17 @@ export const GET: RequestHandler = async ({ url }) => {
 				continue;
 			}
 
-			// Extract name (use Address if available, otherwise generate one)
+			// Extract name (prioritize Name field, then fall back to others)
 			let name = 'Unnamed Location';
-			if (address) {
-				name = address;
-			} else if (properties['Name']?.title?.[0]?.plain_text) {
-				name = properties['Name'].title[0].plain_text;
+
+			// Look for Name field (case-insensitive)
+			const nameKey = Object.keys(properties).find((key) => key.toLowerCase() === 'name');
+			if (nameKey && properties[nameKey]?.title?.[0]?.plain_text) {
+				name = properties[nameKey].title[0].plain_text;
 			} else if (properties['Title']?.title?.[0]?.plain_text) {
 				name = properties['Title'].title[0].plain_text;
+			} else if (address) {
+				name = address;
 			}
 
 			// Extract notes (optional)
