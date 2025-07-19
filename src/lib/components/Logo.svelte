@@ -5,7 +5,7 @@
 
 <img
 	src="/logo.png"
-	alt="Notiography Logo"
+	alt="Notionography Logo"
 	{height}
 	class={className}
 	style="object-fit: contain; width: auto;"
