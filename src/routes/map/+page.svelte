@@ -3,8 +3,6 @@
 	import { page } from '$app/stores';
 	import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
 	import { browser } from '$app/environment';
-	import Watermark from '$lib/components/Watermark.svelte';
-	import Logo from '$lib/components/Logo.svelte';
 
 	let mapContainer: HTMLDivElement;
 	let map: any;
@@ -15,6 +13,9 @@
 	
 	if (browser) {
 		isEmbedded = window.self !== window.top;
+		if (isEmbedded) {
+			document.body.classList.add('embedded');
+		}
 	}
 
 	onMount(async () => {
@@ -139,18 +140,18 @@
 	</div>
 {:else}
 	<div bind:this={mapContainer} class="map-container" />
-	{#if isEmbedded}
-		<div class="embedded-logo">
-			<Logo height={32} />
-		</div>
-	{/if}
 {/if}
 
 <style>
 	.map-container {
 		width: 100%;
-		height: calc(100vh);
+		height: calc(100vh - 80px);
 		position: relative;
+	}
+	
+	/* Full height when embedded */
+	:global(.embedded) .map-container {
+		height: 100vh;
 	}
 	
 	.back-link {
@@ -165,15 +166,5 @@
 		text-decoration: underline;
 	}
 	
-	.embedded-logo {
-		position: fixed;
-		top: 8px;
-		left: 8px;
-		background: rgba(255, 255, 255, 0.9);
-		padding: 4px 8px;
-		border-radius: 4px;
-		z-index: 1000;
-		backdrop-filter: blur(4px);
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-	}
+
 </style>
