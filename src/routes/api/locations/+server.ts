@@ -66,9 +66,6 @@ export const GET: RequestHandler = async ({ url }) => {
 		for (const page of response.results as NotionPage[]) {
 			const properties = page.properties;
 
-			// Debug: Log available properties
-			console.log('Available properties:', Object.keys(properties));
-
 			// Extract coordinates (optional)
 			const latitude = properties['Latitude']?.number;
 			const longitude = properties['Longitude']?.number;
@@ -130,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					const geocodeResponse = await fetch(
 						`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
 							address
-						)}.json?access_token=${PUBLIC_MAPBOX_TOKEN}&country=US&limit=1`,
+						)}.json?access_token=${PUBLIC_MAPBOX_TOKEN}&limit=1`,
 						{
 							headers: {
 								'User-Agent': 'Notiography/1.0'
@@ -138,7 +135,6 @@ export const GET: RequestHandler = async ({ url }) => {
 						}
 					);
 					const geocodeData = await geocodeResponse.json();
-					console.log('Mapbox geocoding response for', address, ':', geocodeData);
 
 					if (geocodeData && geocodeData.features && geocodeData.features.length > 0) {
 						const location = geocodeData.features[0];
