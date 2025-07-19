@@ -160,7 +160,11 @@
 					<h3>${location.name}</h3>
 					${location.category ? `<p><strong>Category:</strong> ${location.category}</p>` : ''}
 					${location.notes ? `<p>${location.notes}</p>` : ''}
-					<p><small>${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}</small></p>
+					${
+						location.url
+							? `<p><a href="${location.url}" target="_blank" rel="noopener noreferrer">🔗 Visit Website</a></p>`
+							: ''
+					}
 				</div>
 			`);
 

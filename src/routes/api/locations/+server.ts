@@ -9,6 +9,7 @@ interface LocationData {
 	lat: number;
 	lng: number;
 	notes?: string;
+	url?: string;
 	category?: string;
 	categoryColor?: string;
 }
@@ -29,6 +30,7 @@ interface NotionPage {
 				name: string;
 				color: string;
 			};
+			url?: string;
 		};
 	};
 }
@@ -95,6 +97,12 @@ export const GET: RequestHandler = async ({ url }) => {
 				notes = properties['Notes'].rich_text[0].plain_text;
 			}
 
+			// Extract URL (optional)
+			let url: string | undefined;
+			if (properties['URL']?.url) {
+				url = properties['URL'].url;
+			}
+
 			// Extract category (optional) - check for "Category" field (case-insensitive)
 			let category: string | undefined;
 			let categoryColor: string | undefined;
@@ -118,6 +126,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					lat: latitude,
 					lng: longitude,
 					notes,
+					url,
 					category,
 					categoryColor
 				});
@@ -143,6 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
 							lat: location.center[1], // Mapbox returns [lng, lat]
 							lng: location.center[0],
 							notes,
+							url,
 							category,
 							categoryColor
 						});
