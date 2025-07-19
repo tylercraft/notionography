@@ -234,7 +234,7 @@
 	<div bind:this={mapContainer} class="map-container" />
 	{#if isEmbedded}
 		<div class="embedded-logo">
-			<Logo height={32} />
+			<Logo height={24} />
 		</div>
 	{/if}
 {/if}
