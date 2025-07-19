@@ -287,7 +287,7 @@
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	}
 
-	.embedded-logo img {
+	:global(.embedded-logo img) {
 		display: block;
 	}
 </style>
