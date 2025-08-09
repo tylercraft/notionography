@@ -1,6 +1,14 @@
-![Notionography Logo](logo.png)
+![Notionography Logo](static/logo.png)
 
 A web-based mapping application that pulls location data from Notion databases and displays them on interactive maps using Mapbox.
+
+## 🎮 Live Demo
+
+Want to try it out? Use our sample database with real locations:
+
+**[→ Try the Live Demo](https://notionography.vercel.app/map?db=235249cf719c80a5a30ee6dd648b6803)**
+
+Or visit [notionography.vercel.app](https://notionography.vercel.app/) and enter this database ID: `235249cf719c80a5a30ee6dd648b6803`
 
 ## Features
 
@@ -106,28 +114,8 @@ Visit `http://localhost:5173` and enter your database ID to see your map!
 
 1. **Add a Select field** to your Notion database
 2. **Name it "Category"** (case-insensitive)
-3. **Create your categories** with different colors
+3. **Create your categories** in Notion and choose colors from Notion's built-in color options
 4. **Assign categories** to your locations
-
-### Color-Coded Markers
-
-Each category will display with its Notion color on the map.
-
-For example:
-
-- **Food locations** → Brown markers
-- **Playground locations** → Green markers
-- **Art locations** → Blue markers
-- **Uncategorized locations** → Default blue markers
-
-### Supported Colors
-
-The app supports all Notion select field colors:
-
-- Default, Gray, Brown, Orange, Yellow
-- Green, Blue, Purple, Pink, Red
-
-Categories are optional - locations without categories will use the default blue marker.
 
 ## API Reference
 
