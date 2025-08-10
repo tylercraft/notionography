@@ -11,8 +11,6 @@
 	let error: string | null = null;
 	let locations: any[] = [];
 	let isEmbedded = false;
-	let lastUpdate: string | null = null;
-	let pollingInterval: number | null = null;
 
 	if (browser) {
 		isEmbedded = window.self !== window.top;
@@ -37,20 +35,6 @@
 
 		// Initial load
 		await loadLocations(databaseId);
-
-		// Start polling for updates (every 30 seconds)
-		if (!isEmbedded) {
-			pollingInterval = setInterval(async () => {
-				await checkForUpdates(databaseId);
-			}, 5000); // 5 seconds
-		}
-
-		// Cleanup on unmount
-		return () => {
-			if (pollingInterval) {
-				clearInterval(pollingInterval);
-			}
-		};
 	});
 
 	async function loadLocations(databaseId: string) {
@@ -73,34 +57,11 @@
 
 			// Store locations and let reactive statement handle map initialization
 			locations = result.locations;
-			lastUpdate = new Date().toISOString();
 			loading = false;
 		} catch (err) {
 			console.error('Error loading map:', err);
 			error = 'Failed to load map. Please check your configuration.';
 			loading = false;
-		}
-	}
-
-	async function checkForUpdates(databaseId: string) {
-		try {
-			const response = await fetch(`/api/locations?db=${encodeURIComponent(databaseId)}`);
-			const result = await response.json();
-
-			if (response.ok && result.locations) {
-				// Check if count changed or if we have new locations
-				if (result.count !== locations.length) {
-					console.log('Database updated: location count changed');
-					await loadLocations(databaseId);
-					// Reinitialize map with new data
-					if (map) {
-						map.remove();
-						map = null;
-					}
-				}
-			}
-		} catch (err) {
-			console.error('Error checking for updates:', err);
 		}
 	}
 
